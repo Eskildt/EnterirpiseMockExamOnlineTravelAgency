@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:sec="http://www.springframework.org/security/tags"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xml:lang="en" lang="en">
+<ui:composition template="layout.xhtml">
+    <ui:define name="title">
+        Trip details
+    </ui:define>
+    <ui:define name="content">
+        <c:set var="id" value="#{param['tripID']}"/>
+        <c:set var="trip" value="#{travelController.getTrip(id)}"/>
+        <c:set var="isPurchased" value="#{param['isPurchased']}"/>
+        <sec:authenticated>
+            <h:form prependId="false" id="bookingForm"
+                    rendered="#{travelController.isNotPurchased(trip.id,userInfoController.userName)}">
+                <h:commandButton value="Book the trip"
+                                 action="#{travelController.makePurchase(userInfoController.userName)}"
+                                 id="bookingBtn"/>
+            </h:form>
+        </sec:authenticated>
+
+        <c:if test="#{!empty isPurchased}">
+            <c:choose>
+                <c:when test="#{isPurchased.equals('true')}">
+                    <p>Purchase was sucesfull!</p>
+                </c:when>
+                <c:otherwise>
+                    <p>Purchase failed!</p>
+                </c:otherwise>
+            </c:choose>
+        </c:if>
+        <c:choose>
+            <c:when test="#{empty param['tripID']}">
+                <p class="alert alert-danger">No id, can not display data</p>
+            </c:when>
+            <c:otherwise>
+                <div class="descriptionData">
+                    <h:outputLabel>Trip to: #{trip.title}</h:outputLabel>
+                    <h:outputLabel>Description: #{trip.description}</h:outputLabel>
+                    <h:outputLabel>Price: #{trip.cost}</h:outputLabel>
+                    <h:outputLabel>Name of location: #{trip.locationName}</h:outputLabel>
+                    <h:outputLabel>Departure date: #{trip.departureDate}</h:outputLabel>
+                    <h:outputLabel>Return date: #{trip.returnDate}</h:outputLabel>
+
+                    <div class="userInfoTable">
+                        <p class="alert alert-dark">Users taking this trip</p>
+                        <h:dataTable styleClass="table table-hover" value="#{trip.allTravelers}"
+                                     var="users" border="1" id="tripTable">
+                            <h:column>
+                                <f:facet name="header">User ID</f:facet>
+                                <h:outputText value="#{users.userID}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Name</f:facet>
+                                <h:outputText value="#{users.name}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Last name</f:facet>
+                                <h:outputText value="#{users.lastName}"/>
+                            </h:column>
+
+                        </h:dataTable>
+                    </div>
+                </div>
+            </c:otherwise>
+        </c:choose>
+
+    </ui:define>
+
+</ui:composition>
+
+
+</html>

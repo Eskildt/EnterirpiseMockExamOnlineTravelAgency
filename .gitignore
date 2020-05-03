@@ -1,0 +1,4 @@
+# Project exclude paths
+/backend/target/
+/frontened/target/
+/report/target/

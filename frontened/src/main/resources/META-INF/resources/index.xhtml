@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xml:lang="en" lang="en">
+<ui:composition template="layout.xhtml">
+    <ui:define name="title">
+        Home page
+    </ui:define>
+
+    <ui:define name="content">
+        <ui:param name="errorText" value=""/>
+
+        <c:if test="#{empty param['query']}">
+            <ui:param name="listOfTrips" value="#{travelController.getTrips(5)}"/>
+            <ui:param name="errorText" value="No travels"/>
+        </c:if>
+        <c:if test="#{!empty param['query']}">
+            <ui:param name="listOfTrips"
+                      value="#{travelController.filterTripsBy(param['searchBy'], param['query'])}"/>
+            <ui:param name="errorText" value="No trips meating criteria"/>
+        </c:if>
+        <c:choose>
+            <c:when test="#{listOfTrips.size() == 0}">
+                <h:outputLabel>#{errorText}</h:outputLabel>
+            </c:when>
+            <c:otherwise>
+
+
+                <h:form prependId="false" styleClass="searchBox">
+                    <h:inputText id="queryInputID" styleClass="form-control m-2 p-2" value="#{searchController.query}"/>
+                    <h:selectOneMenu id="selectOneID" styleClass="form-control m-2 p-2"
+                                     value="#{searchController.selection}">
+                        <f:selectItem itemValue="byCost" itemLabel="Search by cost"/>
+                        <f:selectItem itemValue="byLocation" itemLabel="Search by location"/>
+                    </h:selectOneMenu>
+                    <h:commandButton id="searchBtn" styleClass="btn-outline-primary form-control m-2 p-2" value="Submit"
+                                     action="#{searchController.getSearchLink()}"/>
+                </h:form>
+
+                <h:dataTable styleClass="table table-hover" value="#{listOfTrips}"
+                             var="trip" border="1" id="tripTable">
+                    <h:column>
+                        <f:facet name="header">ID</f:facet>
+                        <h:outputText value="#{trip.id}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Title</f:facet>
+                        <h:outputText value="#{trip.title}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Price</f:facet>
+                        <h:outputText value="#{trip.cost}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Location</f:facet>
+                        <h:outputText value="#{trip.locationName}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Trip details</f:facet>
+                        <h:form prependId="false" id="detailsForm">
+                            <h:commandButton value="Details"
+                                             styleClass="btn btn-outline-info"
+                                             action="#{travelController.getTripRedirectionLink(trip.id)}"
+                                             id="detailsBtn_#{trip.id}"/>
+
+                        </h:form>
+                    </h:column>
+                </h:dataTable>
+            </c:otherwise>
+        </c:choose>
+    </ui:define>
+</ui:composition>
+
+</html>

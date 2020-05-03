@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:sec="http://www.springframework.org/security/tags"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xml:lang="en" lang="en">
+<head>
+    <link rel="stylesheet" href="/assets/style.css"/>
+
+    <title>
+        <ui:insert name="title">Default title</ui:insert>
+    </title>
+</head>
+<body>
+<a id="homepageLinkId" href="index.jsf" class="btn  p-1 m-3 btn-outline-primary">Home page</a>
+<sec:authenticated>
+    <a id="logoutBtn" class="btn  p-1 m-3 btn-outline-danger" href="/logout">Logout</a>
+    <h:outputLabel>Welcome: </h:outputLabel><h:link class="btn  p-1 m-3 btn-outline-success" id="userID" outcome="user"
+                                                    value="#{userInfoController.userName}"/>
+</sec:authenticated>
+
+<sec:anonymous>
+    <p class="alert alert-warning">You are not logged in!</p>
+    <a id="linkToLoginId" href="login.jsf" class="btn p-1 m-3 btn-outline-danger">Log In</a>
+    <a id="linkToSignupId" href="signup.jsf" class="btn  p-1 m-3 btn-outline-success">Sign Up</a>
+</sec:anonymous>
+
+<ui:insert name="content"/>
+<hr/>
+
+
+</body>
+</html>
