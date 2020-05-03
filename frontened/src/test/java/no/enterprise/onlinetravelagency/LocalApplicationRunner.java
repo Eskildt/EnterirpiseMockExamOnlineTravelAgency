@@ -1,7 +1,7 @@
-package no.enterprise.onlinetravelagency.selenium;
+package no.enterprise.onlinetravelagency;
 
 
-import no.enterprise.onlinetravelagency.Application;
+
 import org.springframework.boot.SpringApplication;
 
 public class LocalApplicationRunner {
