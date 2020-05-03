@@ -1,4 +1,5 @@
 # Project exclude paths
+/.idea
 /backend/target/
 /frontened/target/
 /report/target/
